@@ -1,7 +1,7 @@
 import sqlite3
 
 
-# Task 1
+# Task 1 — Aggregation
 def top_departments(db_path):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
@@ -9,7 +9,7 @@ def top_departments(db_path):
     query = """
     SELECT d.name, SUM(e.salary) AS total_salary
     FROM employees e
-    JOIN departments d ON e.department_id = d.id
+    JOIN departments d ON e.dept_id = d.dept_id
     GROUP BY d.name
     ORDER BY total_salary DESC
     LIMIT 3;
@@ -17,12 +17,11 @@ def top_departments(db_path):
 
     cursor.execute(query)
     result = cursor.fetchall()
-
     conn.close()
     return result
 
 
-# Task 2
+# Task 2 — JOIN
 def employees_with_projects(db_path):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
@@ -30,38 +29,36 @@ def employees_with_projects(db_path):
     query = """
     SELECT e.name, p.name
     FROM employees e
-    INNER JOIN project_assignments pa ON e.id = pa.employee_id
-    INNER JOIN projects p ON pa.project_id = p.id;
+    INNER JOIN project_assignments pa ON e.emp_id = pa.emp_id
+    INNER JOIN projects p ON pa.project_id = p.project_id;
     """
 
     cursor.execute(query)
     result = cursor.fetchall()
-
     conn.close()
     return result
 
 
-# Task 3
+# Task 3 — Window Function
 def salary_rank_by_department(db_path):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
     query = """
-    SELECT 
+    SELECT
         e.name,
         d.name,
         e.salary,
         RANK() OVER(
-            PARTITION BY e.department_id
+            PARTITION BY e.dept_id
             ORDER BY e.salary DESC
         ) AS rank
     FROM employees e
-    JOIN departments d ON e.department_id = d.id
+    JOIN departments d ON e.dept_id = d.dept_id
     ORDER BY d.name, rank;
     """
 
     cursor.execute(query)
     result = cursor.fetchall()
-
     conn.close()
     return result
