@@ -39,7 +39,7 @@ def employees_with_projects(db_path):
     return result
 
 
-# Task 3 — Window Function
+# Task 3 Window Functio
 def salary_rank_by_department(db_path):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
